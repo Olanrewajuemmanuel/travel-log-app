@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const baseUrl = "https://gentle-coast-76167.herokuapp.com/"
+const baseUrl = "https://radiant-everglades-25935.herokuapp.com/"
 
 const axiosClient =  axios.create({
     baseURL: baseUrl,
