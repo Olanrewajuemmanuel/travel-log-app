@@ -24,7 +24,7 @@ async function initializeApp(app: Express) {
   if (isInProduction) {
     app.use(express.static("../Travel-log-frontend/build"));
     app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../Travel-log-frontend/build/index.html"));
+      res.sendFile(path.join(__dirname, "Travel-log-frontend", "build", "index.html"));
     });
   }
   
