@@ -36,7 +36,7 @@ async function initializeApp(app: Express) {
 
   app.use(
     cors({
-      origin: "http://localhost:3000/",
+      origin: "*",
       credentials: true,
     })
   );
