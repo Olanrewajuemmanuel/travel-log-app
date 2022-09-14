@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+.stay-at-bottom {
+    @apply text-gray-100 p-5 fixed bottom-0 w-full h-[90px] mt-[-100px] clear-both;
+}

@@ -1,0 +1,43 @@
+{
+  "dependencies": {
+    "typescript": "^4.7.4",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/helmet": "^4.0.0",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/mongoose": "^5.11.97",
+    "@types/morgan": "^1.9.3",
+    "@types/multer": "^1.4.7",
+    "@types/cors": "^2.8.12",
+    "@types/uuid": "^8.3.4",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-jwt": "^7.7.5",
+    "express-validator": "^6.14.2",
+    "helmet": "^5.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
+    "mongoose": "^6.5.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^8.3.2",
+    "ts-node": "^10.9.1"
+  },
+  "scripts": {
+    "build": "ts-node ./src/index.ts",
+    "build-dev": "ts-node-dev --respawn ./src/index.ts",
+    "start": "node ./dist/index.js",
+    "build-client": "cd ../*frontend && npm install && npm run build",
+    "postinstall": "tsc",
+    "heroku-postbuild": "cd *frontend && npm install && npm run build"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0"
+  },
+  "engines": {
+    "node": "v16.13.2"
+  }
+}

@@ -1,0 +1,5 @@
+.env
+./config
+/node_modules/
+request.rest
+./Travel-log-frontend/node_modules/
