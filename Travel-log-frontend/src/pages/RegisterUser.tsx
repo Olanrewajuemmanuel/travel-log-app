@@ -75,7 +75,7 @@ const RegisterUser = ({ cookies }: any) => {
 
     axios({
       method: "post",
-      url: "api/user/register",
+      url: "/api/user/register",
       data: {
         firstName: formData.firstName,
         lastName: formData.lastName,

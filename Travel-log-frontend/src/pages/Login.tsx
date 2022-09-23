@@ -52,7 +52,7 @@ const Login = ({ cookies }: any) => {
     }
     axios({
       method: "post",
-      url: "api/user/login",
+      url: "/api/user/login",
       data: {
         userOrEmail: userOrEmail,
         password: password,

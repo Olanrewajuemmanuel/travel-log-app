@@ -21,12 +21,7 @@ const isInProduction =
   process.env.NODE_ENV === "production";
 
 async function initializeApp(app: Express) {
-  if (isInProduction) {
-    app.use(express.static("../Travel-log-frontend/build"));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../Travel-log-frontend", "build", "index.html"));
-    });
-  }
+  
   
   // middlewares
   app.use(morgan(`${isInProduction ? "combined" : "dev"}`));
@@ -35,10 +30,7 @@ async function initializeApp(app: Express) {
   app.use(express.static("uploads"));
 
   app.use(
-    cors({
-      origin: "*",
-      credentials: true,
-    })
+    cors()
   );
   app.use(helmet());
   app.use(cookieParser());
@@ -74,6 +66,13 @@ async function initializeApp(app: Express) {
   app.use("/api/user", userRouter);
   app.use("/api/feed", feedRouter);
   app.use("/api/profile", profileRouter);
+
+  if (isInProduction) {
+    app.use(express.static("../Travel-log-frontend/build"));
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(__dirname, "../Travel-log-frontend", "build", "index.html"));
+    });
+  }
 
   // connect to mongoDB
   try {
