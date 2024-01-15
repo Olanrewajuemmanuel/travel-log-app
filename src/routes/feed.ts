@@ -6,6 +6,7 @@ import { upload } from "../fileUploadLogic";
 import verifyToken from "../middlewares";
 import FeedSchema from "../schemas/Feed";
 import UserSchema from "../schemas/User";
+import multer from "multer";
 
 const feedRouter = Router();
 
@@ -20,7 +21,7 @@ feedRouter.post(
   check("rating").toInt(),
   check("caption").escape().trim(),
   upload.array("images", 4),
-  async (req, res) => {
+  async (req: Request, res: any) => {
     const errors = validationResult(req.body);
     if (!errors.isEmpty())
       return res.status(400).json({ error: errors.array() });
@@ -40,8 +41,8 @@ feedRouter.post(
 
 // GET /feed --> AllFeeds
 feedRouter.get("/", verifyToken, async (req, res) => {
-  const allFeeds = await FeedSchema.find({}).sort("-dateModified");  
-  
+  const allFeeds = await FeedSchema.find({}).sort("-dateModified");
+
   return res.send(allFeeds);
 });
 

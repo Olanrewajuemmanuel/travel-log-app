@@ -1,28 +1,42 @@
 import { AxiosResponse } from "axios";
-import { withCookies } from "react-cookie";
+import { useCookies, withCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
-import { axiosClient } from "../axiosClient";
+import { axiosClient, axiosPrivate } from "../axiosClient";
 import routes from "../routes";
+import { useEffect, useState } from "react";
 
 interface LogOutResponse extends AxiosResponse {
   message: string;
 }
 
-const Header = ({ cookies, changeDisplayStatus }: any) => {
+const Header = ({ changeDisplayStatus }: any) => {
   const navigate = useNavigate();
+  const [cookies, setCookies] = useCookies(["accessToken"]);
+  const [inRegister, setInRegister] = useState(false);
   const logout = async () => {
     try {
       const { message }: LogOutResponse = await (
-        await axiosClient.post("user/logout")
+        await axiosPrivate.post("user/logout")
       ).data;
       if (message) {
-        changeDisplayStatus(false)
-        return navigate(routes.LOGIN);
+        changeDisplayStatus(false);
+        setCookies("accessToken", "");
+
+        navigate(routes.LOGIN);
       }
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    if (window.location.pathname == "/register") {
+      setInRegister(true);
+    } else {
+      setInRegister(false);
+    }
+  }, [window.location.pathname]);
+
   return (
     <div className="w-full  shadow-md p-5 flex items-center justify-between">
       <Link to="/">
@@ -32,17 +46,29 @@ const Header = ({ cookies, changeDisplayStatus }: any) => {
       </Link>
 
       <ul className="flex space-x-4">
-        {!cookies.get("accessToken") ? (
-          <li>
-            <button className="rounded-full bg-red-600 hover:bg-red-800 text-gray-100 px-5 py-2">
-              <Link to={routes.LOGIN}>Login</Link>
-            </button>
-          </li>
+        {!cookies.accessToken ? (
+          inRegister ? (
+            <li>
+              <Link to={routes.LOGIN}>
+                <button className="rounded-full bg-red-600 hover:bg-red-800 text-gray-100 px-5 py-2">
+                  Login
+                </button>
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link to={routes.REGISTER}>
+                <button className="rounded-full bg-red-600 hover:bg-red-800 text-gray-100 px-5 py-2">
+                  Register
+                </button>
+              </Link>
+            </li>
+          )
         ) : (
           <li>
             <button
               onClick={logout}
-              className="rounded-full hover:bg-red-600 hover:text-gray-200 text-red-600 px-5 py-2 border-2 border-red-600"
+              className="rounded-full hover:bg-red-600 hover:text-gray-200 text-red-600 px-2.5 py-0.5 border-2 border-red-600"
             >
               Logout
             </button>

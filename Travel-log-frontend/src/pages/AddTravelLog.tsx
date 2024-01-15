@@ -1,8 +1,9 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { withCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import routes from "../routes";
+import { axiosPrivate } from "../axiosClient";
 interface NewFeedInterface {
   images?: FileList;
   location?: string;
@@ -23,18 +24,25 @@ const AddTravelLog = ({ cookies }: any) => {
 
   if (!cookies.get("accessToken")) navigate(routes.LOGIN);
 
-
   useEffect(() => {
-    window.scroll(0, 0)
-  
-  }, [feedErrors.message])
-  
+    window.scroll(0, 0);
+  }, [feedErrors.message]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const { location, rating, caption } = newFeed
+    const { location, rating, caption } = newFeed;
     if (!location || !rating || !caption) {
-      setFeedErrors({ message: "Please fill out all required fields." })
-      return
+      setFeedErrors({ message: "Please fill out all required fields." });
+      setTimeout(() => setFeedErrors({ message: "" }), 4000);
+      return;
+    }
+
+    if (fileArray.length > 4) {
+      setFeedErrors({
+        message: "You can not upload more than 4 files at once",
+      });
+      setTimeout(() => setFeedErrors({ message: "" }), 4000);
+      return;
     }
 
     const formData = new FormData();
@@ -45,29 +53,53 @@ const AddTravelLog = ({ cookies }: any) => {
     for (let i = 0; i < (newFeed.images as FileList).length; i++) {
       formData.append("images", (newFeed as any).images[i]);
     }
-    
+    const axiosInstance = axios.create({
+      baseURL: "http://localhost:4000/api",
+      withCredentials: true,
+      timeout: 2000,
+    });
 
-    axios
+    axiosInstance
       .post("/feed/create", formData, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       })
       .then((res) => {
-        if (res.status === 201) { //created
-          navigate(routes.HOME, { replace: true })
+        console.log(res);
+
+        if (res.status === 201) {
+          //created
+          navigate(routes.HOME, { replace: true });
         }
-        
       })
-      .catch((err) => {
+      .catch((err: AxiosError) => {
         // Error: File must be of type jpg, jpeg or png
-        if (
-          err.response.status === 500 &&
-          /Error: File must be of type jpg, jpeg or png/.test(err.response.data)
-        ) {
+        if (err?.response) {
+          if (
+            err.response.status === 500 &&
+            /Error: File must be of type jpg, jpeg or png/.test(
+              err.response.data as string
+            )
+          ) {
+            setFeedErrors({
+              message: "Error: File must be of type jpg, jpeg or png",
+            });
+          } else if (
+            err.response.status === 500 &&
+            /File too large/.test(err.response.data as string)
+          ) {
+            setFeedErrors({
+              message: "Error: File(s) must be less than 2MB",
+            });
+          }
+        } else if (err.request) {
+          console.log(err.request);
+        } else {
           setFeedErrors({
-            message: "Error: File must be of type jpg, jpeg or png",
+            message: "An unexpected error occurred! Try again later.",
           });
+          console.log("Some other error", err.message);
         }
       });
   };
@@ -106,11 +138,19 @@ const AddTravelLog = ({ cookies }: any) => {
                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
               />
             </svg>
-            {fileArray.length
-              ? fileArray.map((file) => (
+            {fileArray.length ? (
+              fileArray.length < 3 ? (
+                fileArray.map((file) => (
                   <b className="inline-block mr-2 underline">{file.name}</b>
                 ))
-              : "Choose your images and videos"}
+              ) : (
+                <b className="inline-block mr-2 underline">
+                  {fileArray[0].name} and {fileArray.slice(1).length} others
+                </b>
+              )
+            ) : (
+              "Choose your images and videos"
+            )}
           </label>
 
           <input
@@ -190,7 +230,10 @@ const AddTravelLog = ({ cookies }: any) => {
             }
           />
         </div>
-        <button className="px-3 py-2 bg-red-600 hover:bg-red-700 text-gray-100 rounded-lg w-[80px]">
+        <button
+          className="px-3 py-2 bg-red-600 hover:bg-red-700 text-gray-100 rounded-lg w-[80px]"
+          type="submit"
+        >
           Post
         </button>
       </form>

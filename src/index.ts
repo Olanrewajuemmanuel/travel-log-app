@@ -17,20 +17,20 @@ dotenv.config();
 const app: Express = express();
 
 const PORT = process.env.PORT || 4000;
-const isInProduction =
-  process.env.NODE_ENV === "production";
+const isInProduction = process.env.NODE_ENV === "production";
 
 async function initializeApp(app: Express) {
-  
-  
   // middlewares
   app.use(morgan(`${isInProduction ? "combined" : "dev"}`));
   app.use(express.urlencoded({ extended: true, limit: "5mb" }));
   app.use(express.json());
-  app.use(express.static("uploads"));
+  app.use("/uploads", express.static("uploads"));
 
   app.use(
-    cors()
+    cors({
+      credentials: true,
+      origin: ["http://localhost:3000"],
+    })
   );
   app.use(helmet());
   app.use(cookieParser());
@@ -53,8 +53,13 @@ async function initializeApp(app: Express) {
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof multer.MulterError) {
       if (err.code === "LIMIT_FILE_SIZE") {
-        return res.json({
+        return res.status(400).json({
           message: "file is too large, max_size: 2MB",
+        });
+      }
+      if (err.code === "LIMIT_UNEXPECTED_FILE") {
+        return res.status(400).json({
+          message: err.message,
         });
       }
     }
@@ -70,7 +75,9 @@ async function initializeApp(app: Express) {
   if (isInProduction) {
     app.use(express.static("../Travel-log-frontend/build"));
     app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../Travel-log-frontend", "build/index.html"));
+      res.sendFile(
+        path.join(__dirname, "../Travel-log-frontend", "build/index.html")
+      );
     });
   }
 

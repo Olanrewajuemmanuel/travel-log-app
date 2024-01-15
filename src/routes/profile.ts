@@ -10,19 +10,40 @@ profileRouter.get("/:username", verifyToken, async (req, res, next) => {
   // check if username requested is equals to current user logged in
 
   const decoded = (req as any).token;
-  
-  const doc = await UserSchema.findOne({ username: req.params.username }).select("-password -phone");
-  if (!doc) return res.status(404).json({
-    message: "Not found"
-  });
+
+  const doc = await UserSchema.findOne({
+    username: req.params.username,
+  }).select("-password -phone");
+  if (!doc)
+    return res.status(404).json({
+      message: "Not found",
+    });
   if (decoded && doc.id === decoded.user) {
     return res.json({
       doc,
-      currentUserProfile: true
-    })
+      currentUserProfile: true,
+    });
   } else {
-    res.json({doc})
+    return res.json({ doc });
   }
+});
+
+profileRouter.get("/", verifyToken, async (req, res, next) => {
+  const decoded = (req as any).token;
+
+  if (!decoded)
+    return res.status(400).json({
+      message: "User not authenticated",
+    });
+
+  const doc = await UserSchema.findOne({ id: decoded.id }).select(
+    "-password -phone"
+  );
+  if (!doc)
+    return res.status(404).json({
+      message: "Not found",
+    });
+  return res.json({ doc });
 });
 
 profileRouter.post(
@@ -47,6 +68,5 @@ profileRouter.post(
     );
   }
 );
-
 
 export default profileRouter;

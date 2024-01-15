@@ -9,7 +9,7 @@ import { TravelLogState } from "./types";
 import Login from "./pages/Login";
 import RegisterUser from "./pages/RegisterUser";
 import { FeedContext, initialState } from "./store";
-import { Cookies, withCookies } from "react-cookie";
+import { Cookies, useCookies, withCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 
 type TravelLogContext = {
@@ -23,8 +23,9 @@ type User = {
     email?: string;
   };
 };
-function App({ cookies }: any) {
+function App() {
   const [displayNav, setDisplayNav] = useState(false);
+  const [cookies, setCookies] = useCookies(["accessToken"]);
   return (
     <FeedContext.Provider value={initialState}>
       <Header changeDisplayStatus={setDisplayNav} />
@@ -37,15 +38,15 @@ function App({ cookies }: any) {
             />
             <Route path={routes.ADD_TRAVEL_LOG} element={<AddTravelLog />} />
             <Route path={routes.PROFILE}>
-              <Route path=":username" element={<Profile />}/>
               <Route index element={<Profile />} />
+              <Route path=":username" element={<Profile />} />
             </Route>
             <Route path={routes.LOGIN} element={<Login />} />
             <Route path={routes.REGISTER} element={<RegisterUser />} />
             <Route path="*" element={<h1>Not found</h1>} />
           </Routes>
         </main>
-        {displayNav ? <NavBar /> : null}
+        {cookies.accessToken ? <NavBar /> : null}
       </div>
     </FeedContext.Provider>
   );

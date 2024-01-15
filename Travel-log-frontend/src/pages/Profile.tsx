@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams, Outlet } from "react-router-dom";
 import profile from "../assets/profile.webp";
-import { axiosClient } from "../axiosClient";
+import { axiosClient, axiosPrivate } from "../axiosClient";
 
 interface ProfileDetails {
   date_created?: string;
@@ -17,20 +17,24 @@ const Profile = () => {
   const [error, setError] = useState({ message: "" });
   const [canEditProfile, setCanEditProfile] = useState(false);
   let params = useParams();
-  const currentUser = params.username || localStorage.getItem("currentUser");
+
+  const isUserProfile = !params.username;
 
   const getUser = useCallback(async () => {
-    try {
-      const res = await axiosClient(`/profile/${currentUser}`);
-
-      if ((res as any).data.currentUserProfile) setCanEditProfile(true);
-      setProfileDetails(res.data.doc);
-    } catch (error) {
-      setError({ message: (error as any).response?.data.message });
-    }
-  }, [currentUser]);
+    const url = isUserProfile ? "/profile" : `/profile/${params.username}`;
+    const res = await axiosPrivate(url);
+    if (res.status === 400) throw new Error("No user was found");
+    const data = await res.data;
+    // if ((res as any).data.currentUserProfile) setCanEditProfile(true);
+    // setProfileDetails(res.data.doc);
+    // setError({ message: (error as any).response?.data.message });
+  }, [params.username]);
   useEffect(() => {
-    getUser();
+    getUser()
+      .then((result) => {})
+      .catch((err) => {
+        setError(err.message);
+      });
   }, [getUser]);
   if (error.message) return <h1>User not found</h1>;
   return (

@@ -3,11 +3,11 @@ import moment from "moment";
 import { motion } from "framer-motion";
 import { Engagement } from "./Engagement";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 interface Props {
   log: TravelLog;
-  dispatchFn: React.Dispatch<LogAction>
-
+  dispatchFn: React.Dispatch<LogAction>;
 }
 const widthVariant = {
   initial: {
@@ -38,27 +38,45 @@ function displayStar(id: number) {
   );
 }
 
+function displayCircle(
+  isActive: boolean,
+  index: number,
+  updIndex: React.Dispatch<React.SetStateAction<number>>
+) {
+  return (
+    <span
+      className={`rounded-full  cursor-pointer p-2 ${
+        isActive ? "bg-[#5957da]" : "bg-slate-300"
+      }`}
+      onClick={() => updIndex(index)}
+    ></span>
+  );
+}
+
 export const Feed: React.FC<Props> = ({ log, dispatchFn }) => {
   var images =
     log.imgSet &&
     log.imgSet.map((img, index) => (
       <img
         className="w-full md:w-[500px] max-h-[500px]"
-        src={img}
+        src={`http://localhost:4000/uploads/${img}`}
         alt={log.location}
         key={index.toString()}
       />
     ));
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   return (
     <div className="p-3 max-w-[500px] my-6">
       <Link to={`/profile/${log.username}`}>
-        <p className="mb-3 font-bold underline">{log.username}</p>
+        <p className="mb-3 font-bold text-lg">{log.username}</p>
       </Link>
-      <div className="carousel relative">
-        {images}
+      <div className="carousel relative overflow-hidden">
+        <div style={{ maxWidth: "100%", height: "300px" }} className="flex">
+          {images && images[currentIndex]}
+        </div>
         {/* Location icon */}
-        <span className="cursor-pointer absolute top-3 left-2 bg-[#202020] p-2 rounded-full">
+        <span className="cursor-pointer absolute top-3 left-2 bg-[#636363] p-1 rounded-full">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -86,7 +104,7 @@ export const Feed: React.FC<Props> = ({ log, dispatchFn }) => {
           initial="initial"
           whileHover="animate"
           // layout
-          className="cursor-pointer absolute top-3 left-2 bg-[#202020] rounded-full text-gray-100 text-md p-2 opacity-0"
+          className="cursor-pointer absolute top-3 left-2 bg-[#636363] rounded-full text-gray-100 text-md px-3 py-1 opacity-0"
         >
           <motion.span
             initial={{ opacity: 0 }}
@@ -96,9 +114,27 @@ export const Feed: React.FC<Props> = ({ log, dispatchFn }) => {
             {log.location}
           </motion.span>
         </motion.span>
+        <nav className="bg-red absolute bottom-3 left-[44.999999%] mx-0 flex space-x-3">
+          {images &&
+            images.map((img, index) => {
+              return displayCircle(
+                index === currentIndex,
+                index,
+                setCurrentIndex
+              );
+            })}
+        </nav>
       </div>
-      <Engagement likes={log.likes} visited={log.visited} feedId={log._id} userLiked={log.userhasLikedFeed} dispatchFn={dispatchFn} />
-      <p>{Array.from(Array(log.rating)).map((_, index) => displayStar(index))}</p>
+      <Engagement
+        likes={log.likes}
+        visited={log.visited}
+        feedId={log._id}
+        userLiked={log.userhasLikedFeed}
+        dispatchFn={dispatchFn}
+      />
+      <p>
+        {Array.from(Array(log.rating)).map((_, index) => displayStar(index))}
+      </p>
       <p className="mb-5">{log.caption}</p>
       <p>Comment Section</p>
       <i className="block text-sm text-gray-700 text-right">

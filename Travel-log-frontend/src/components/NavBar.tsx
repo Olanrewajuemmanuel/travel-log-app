@@ -1,17 +1,14 @@
 import { Link } from "react-router-dom";
 
-
-
 const NavBar = () => {
-  const currentUser = localStorage.getItem("currentUser")
   return (
     <div className="stay-at-bottom bg-gray-100">
-      <div className="p-2 flex justify-between">
+      <div className="p-2 flex justify-between md:justify-around">
         <Link to="/">
           <button className="block p-2 hover:bg-gray-200 rounded-full hover:rounded-full hover:scale-[1.1] transition ease-out">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h8 w-8"
+              className="h-6 w-6 md:w-8 md:h-8"
               viewBox="0 0 20 20"
               fill="#2c2c2c"
             >
@@ -24,7 +21,7 @@ const NavBar = () => {
           <button className="block p-2 hover:bg-gray-200 rounded-full hover:rounded-full hover:scale-[1.1] transition ease-out">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h8 w-8"
+              className="h-6 w-6 md:w-8 md:h-8"
               fill="none"
               viewBox="0 0 24 24"
               stroke="#2c2c2c"
@@ -39,11 +36,11 @@ const NavBar = () => {
           </button>
         </Link>
 
-        <Link to={`/profile/${currentUser}`}>
+        <Link to={`/profile`}>
           <button className="block p-2 hover:bg-gray-200 rounded-full hover:rounded-full hover:scale-[1.1] transition ease-out">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h8 w-8"
+              className="h-6 w-6 md:w-8 md:h-8"
               fill="none"
               viewBox="0 0 24 24"
               stroke="#2c2c2c"
