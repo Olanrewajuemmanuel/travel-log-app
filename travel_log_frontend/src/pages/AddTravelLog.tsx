@@ -3,7 +3,8 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { withCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import routes from "../routes";
-import { axiosPrivate } from "../axiosClient";
+import { baseUrl } from "../axiosClient";
+
 interface NewFeedInterface {
   images?: FileList;
   location?: string;
@@ -54,7 +55,7 @@ const AddTravelLog = ({ cookies }: any) => {
       formData.append("images", (newFeed as any).images[i]);
     }
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:4000/api",
+      baseURL: baseUrl,
       withCredentials: true,
       timeout: 2000,
     });

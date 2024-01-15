@@ -1,7 +1,10 @@
 import axios from "axios";
 
 // const baseUrl = "https://radiant-everglades-25935.herokuapp.com/"
-const baseUrl = "http://localhost:4000/";
+const inProduction = process.env.NODE_ENV === "production";
+export const baseUrl = inProduction
+  ? "https://trave-log-backend-service.onrender.com/api/"
+  : "http://localhost:4000/api/";
 
 const axiosClient = axios.create({
   baseURL: baseUrl,
@@ -9,7 +12,7 @@ const axiosClient = axios.create({
 });
 
 const axiosPrivate = axios.create({
-  baseURL: baseUrl + "api",
+  baseURL: baseUrl,
   withCredentials: true,
   timeout: 2000,
   headers: {

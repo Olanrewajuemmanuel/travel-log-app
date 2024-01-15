@@ -1,11 +1,11 @@
-import axios from "axios";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { withCookies, useCookies } from "react-cookie";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import routes from "../routes";
 import { UserInfo } from "../types";
 import { verifyTokenAccess } from "../helpers";
 import moment from "moment";
+import { axiosClient } from "../axiosClient";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -56,9 +56,9 @@ const Login = () => {
       controller.abort();
       setIsLoading(false);
     }
-    axios({
+    axiosClient({
       method: "post",
-      url: "http://localhost:4000/api/user/login",
+      url: "/user/login",
       data: {
         userOrEmail: userOrEmail,
         password: password,

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams, Outlet } from "react-router-dom";
 import profile from "../assets/profile.webp";
-import { axiosClient, axiosPrivate } from "../axiosClient";
+import { axiosPrivate } from "../axiosClient";
 
 interface ProfileDetails {
   date_created?: string;
@@ -24,7 +24,7 @@ const Profile = () => {
     const url = isUserProfile ? "/profile" : `/profile/${params.username}`;
     const res = await axiosPrivate(url);
     if (res.status === 400) throw new Error("No user was found");
-    const data = await res.data;
+    // const data = await res.data;
     // if ((res as any).data.currentUserProfile) setCanEditProfile(true);
     // setProfileDetails(res.data.doc);
     // setError({ message: (error as any).response?.data.message });

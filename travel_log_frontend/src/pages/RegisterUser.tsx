@@ -1,7 +1,6 @@
-import axios from "axios";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useCookies, withCookies } from "react-cookie";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import routes from "../routes";
 import { UserInfo } from "../types";
 import { axiosClient } from "../axiosClient";
@@ -109,7 +108,7 @@ const RegisterUser = () => {
 
     axiosClient({
       method: "post",
-      url: "/api/user/register",
+      url: "/user/register",
       data: {
         firstName: formData.firstName,
         lastName: formData.lastName,

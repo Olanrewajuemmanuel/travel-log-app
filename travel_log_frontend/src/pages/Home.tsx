@@ -1,35 +1,27 @@
-import { LogActionType, TravelLog, TravelLogState } from "../types";
+import { LogActionType } from "../types";
 import { Feed } from "../components/Feed";
-import React, {
-  Consumer,
-  Provider,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from "react";
-import { FeedContext, initialState, reducer } from "../store";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { initialState, reducer } from "../store";
 import { axiosPrivate } from "../axiosClient";
 import routes from "../routes";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useCookies, withCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import { verifyTokenAccess } from "../helpers";
 
 interface Props {
   changeDisplayStatus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Home = ({ changeDisplayStatus }: any) => {
+const Home = ({ changeDisplayStatus }: Props) => {
   const [error, setError] = useState({
     message: "",
   });
   const [logs, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["accessToken"]);
+  const [cookies] = useCookies(["accessToken"]);
 
   const fetchData = useMemo(async () => {
-    const res = await axiosPrivate.get("/feed/");
+    const res = await axiosPrivate.get("/feed");
 
     try {
       const feeds = await res.data;
@@ -65,7 +57,7 @@ const Home = ({ changeDisplayStatus }: any) => {
           setError({ message: err.message });
         }
       });
-  }, [fetchData]);
+  }, [fetchData, changeDisplayStatus, cookies, navigate]);
 
   return (
     <div className="md:flex justify-center items-center flex-col">
@@ -77,4 +69,4 @@ const Home = ({ changeDisplayStatus }: any) => {
   );
 };
 
-export default withCookies(Home);
+export default Home;

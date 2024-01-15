@@ -73,10 +73,10 @@ async function initializeApp(app: Express) {
   app.use("/api/profile", profileRouter);
 
   if (isInProduction) {
-    app.use(express.static("../Travel-log-frontend/build"));
+    app.use(express.static("../travel_log_frontend/build"));
     app.get("*", (req, res) => {
       res.sendFile(
-        path.join(__dirname, "../Travel-log-frontend", "build/index.html")
+        path.join(__dirname, "../travel_log_frontend", "build/index.html")
       );
     });
   }

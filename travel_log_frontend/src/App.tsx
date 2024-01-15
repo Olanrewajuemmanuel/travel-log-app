@@ -9,12 +9,12 @@ import { TravelLogState } from "./types";
 import Login from "./pages/Login";
 import RegisterUser from "./pages/RegisterUser";
 import { FeedContext, initialState } from "./store";
-import { Cookies, useCookies, withCookies } from "react-cookie";
-import { useEffect, useState } from "react";
+import { useCookies, withCookies } from "react-cookie";
+import { useState } from "react";
 
-type TravelLogContext = {
-  logs: TravelLogState;
-};
+// type TravelLogContext = {
+//   logs: TravelLogState;
+// };
 
 type User = {
   user: {

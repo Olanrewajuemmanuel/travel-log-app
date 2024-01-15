@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { useCookies, withCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
-import { axiosClient, axiosPrivate } from "../axiosClient";
+import { axiosPrivate } from "../axiosClient";
 import routes from "../routes";
 import { useEffect, useState } from "react";
 
@@ -30,12 +30,12 @@ const Header = ({ changeDisplayStatus }: any) => {
   };
 
   useEffect(() => {
-    if (window.location.pathname == "/register") {
+    if (window.location.pathname === "/register") {
       setInRegister(true);
     } else {
       setInRegister(false);
     }
-  }, [window.location.pathname]);
+  }, []);
 
   return (
     <div className="w-full  shadow-md p-5 flex items-center justify-between">

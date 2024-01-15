@@ -1,4 +1,4 @@
-import { LogAction, LogActionType, TravelLogState } from "../types";
+import { LogAction, LogActionType } from "../types";
 
 interface Props {
   likes: number;
@@ -45,7 +45,10 @@ export const Engagement = ({
         <button
           className="inline-flex"
           onClick={() =>
-            dispatchFn({ type: LogActionType.BOOKMARK, payload: { id: feedId } })
+            dispatchFn({
+              type: LogActionType.BOOKMARK,
+              payload: { id: feedId },
+            })
           }
         >
           <svg
