@@ -92,7 +92,7 @@ const Login = () => {
           Login
         </h1>
         {errors.message && (
-          <p className="p-3 md:w-1/5 bg-red-200 rounded-md text-gray-600">
+          <p className="p-3 bg-red-200 rounded-md text-gray-600">
             {errors.message}
           </p>
         )}

@@ -29,7 +29,10 @@ async function initializeApp(app: Express) {
   app.use(
     cors({
       credentials: true,
-      origin: ["http://localhost:3000"],
+      origin: [
+        "http://localhost:3000",
+        "https://master--legendary-lebkuchen-49cb59.netlify.app",
+      ],
     })
   );
   app.use(helmet());
