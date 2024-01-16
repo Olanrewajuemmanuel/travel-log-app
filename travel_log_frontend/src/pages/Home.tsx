@@ -21,7 +21,7 @@ const Home = ({ changeDisplayStatus }: Props) => {
   const [cookies] = useCookies(["accessToken"]);
 
   const fetchData = useMemo(async () => {
-    const res = await axiosPrivate.get("/feed");
+    const res = await axiosPrivate.get("/feed/");
 
     try {
       const feeds = await res.data;
