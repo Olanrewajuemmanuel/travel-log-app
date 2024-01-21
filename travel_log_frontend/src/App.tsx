@@ -46,8 +46,8 @@ function App() {
             <Route path="*" element={<h1>Not found</h1>} />
           </Routes>
         </main>
-        {cookies.accessToken ? <NavBar /> : null}
       </div>
+      {cookies.accessToken ? <NavBar /> : null}
     </FeedContext.Provider>
   );
 }

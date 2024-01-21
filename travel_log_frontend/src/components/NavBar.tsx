@@ -25,7 +25,7 @@ const NavBar = () => {
               fill="none"
               viewBox="0 0 24 24"
               stroke="#2c2c2c"
-              stroke-width="2"
+              strokeWidth="2"
             >
               <path
                 strokeLinecap="round"
@@ -44,7 +44,7 @@ const NavBar = () => {
               fill="none"
               viewBox="0 0 24 24"
               stroke="#2c2c2c"
-              stroke-width="2"
+              strokeWidth="2"
             >
               <path
                 strokeLinecap="round"

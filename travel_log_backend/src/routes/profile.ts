@@ -3,47 +3,39 @@ import { CustomRequest } from "../config/type";
 import { upload } from "../fileUploadLogic";
 import verifyToken from "../middlewares";
 import UserSchema from "../schemas/User";
+import FeedSchema from "../schemas/Feed";
 
 const profileRouter = Router();
 
-profileRouter.get("/:username", verifyToken, async (req, res, next) => {
+profileRouter.get("/:username?", verifyToken, async (req, res, next) => {
   // check if username requested is equals to current user logged in
 
   const decoded = (req as any).token;
 
-  const doc = await UserSchema.findOne({
-    username: req.params.username,
-  }).select("-password -phone");
-  if (!doc)
-    return res.status(404).json({
-      message: "Not found",
-    });
-  if (decoded && doc.id === decoded.user) {
-    return res.json({
-      doc,
-      currentUserProfile: true,
-    });
+  let doc = null;
+
+  if (!req.params.username) {
+    // Default profile
+    doc = await UserSchema.findById(decoded.user).select("-password -phone");
   } else {
-    return res.json({ doc });
+    doc = await UserSchema.findOne({
+      username: req.params.username,
+    }).select("-password -phone");
   }
-});
 
-profileRouter.get("/", verifyToken, async (req, res, next) => {
-  const decoded = (req as any).token;
-
-  if (!decoded)
-    return res.status(400).json({
-      message: "User not authenticated",
-    });
-
-  const doc = await UserSchema.findOne({ id: decoded.id }).select(
-    "-password -phone"
-  );
   if (!doc)
     return res.status(404).json({
       message: "Not found",
     });
-  return res.json({ doc });
+
+  // Get feeds
+  const feeds = await FeedSchema.find({ username: doc.username });
+
+  return res.json({
+    doc,
+    feeds,
+    currentUserProfile: doc.id === decoded.user,
+  });
 });
 
 profileRouter.post(

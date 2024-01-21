@@ -11,6 +11,7 @@ import multer from "multer";
 import cookieParser from "cookie-parser";
 import { expressjwt } from "express-jwt";
 import path from "path";
+import { JsonWebTokenError } from "jsonwebtoken";
 
 dotenv.config();
 
@@ -66,7 +67,14 @@ async function initializeApp(app: Express) {
         });
       }
     }
+
+    if (err.message == "jwt expired")
+      return res.status(500).json({
+        error: err.message,
+      });
+
     res.status(500);
+
     res.send(err.stack);
   });
 

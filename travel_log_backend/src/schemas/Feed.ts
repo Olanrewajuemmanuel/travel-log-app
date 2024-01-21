@@ -11,18 +11,18 @@ interface FeedDocument extends Document {
   imgSet: Array<string>;
   likes: number;
   visited: boolean;
+  allLikedUsers: Array<Schema.Types.ObjectId>;
 }
 
 const Feed = new Schema({
   userhasLikedFeed: {
     type: Boolean,
-    default: false
+    default: false,
   },
   userId: {
     type: Schema.Types.ObjectId,
     required: true, // user can create multiple feeds
-    unique: false
-
+    unique: false,
   },
   username: String,
   dateModified: {
@@ -33,32 +33,33 @@ const Feed = new Schema({
     type: Number,
     default: 1,
     min: 1,
-    max: 5
+    max: 5,
   },
   caption: {
     type: String,
-    required: true
+    required: true,
   },
   location: {
     type: String,
-    required: true
+    required: true,
   },
   imgSet: [String],
   likes: {
     type: Number,
-    default: 0
+    default: 0,
   },
-  visited: {
-    type: Boolean,
-    default: true,
+  allLikedUsers: {
+    type: [Schema.Types.ObjectId],
+    required: false,
+    ref: "User",
   },
 });
-
 Feed.pre("save", async function (next) {
-  const doc = await UserSchema.findById(this.userId).select('username')
-  this.username = doc?.username
-  next()
-})
-
+  let user = await UserSchema.findById(this.userId);
+  if (!user) return next();
+  this.username = user.username;
+  next();
+});
 const FeedSchema = model<FeedDocument>("Feed", Feed);
+
 export default FeedSchema;

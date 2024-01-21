@@ -133,7 +133,9 @@ userRouter.post(
           },
         });
       } else {
-        return res.status(400).json({ message: "Username or password is incorrect." })
+        return res
+          .status(400)
+          .json({ message: "Username or password is incorrect." });
       }
     });
   }

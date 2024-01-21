@@ -1,9 +1,10 @@
-import { LogAction, TravelLog } from "../types";
+import { LogAction, LogActionType, TravelLog } from "../types";
 import moment from "moment";
 import { motion } from "framer-motion";
 import { Engagement } from "./Engagement";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { axiosPrivate } from "../axiosClient";
 
 interface Props {
   log: TravelLog;
@@ -24,7 +25,7 @@ function displayStar(id: number) {
       key={id}
       xmlns="http://www.w3.org/2000/svg"
       className="h-6 w-6 inline my-3"
-      fill="#d1d366"
+      fill="#f9fd05"
       viewBox="0 0 24 24"
       stroke="none"
       strokeWidth="2"
@@ -48,9 +49,35 @@ function displayCircle(
       className={`rounded-full  cursor-pointer p-2 ${
         isActive ? "bg-[#5957da]" : "bg-slate-300"
       }`}
+      key={index}
       onClick={() => updIndex(index)}
     ></span>
   );
+}
+
+async function likeAction(
+  userLiked: boolean,
+  feedId: string | number,
+  dispatchFn: React.Dispatch<LogAction>
+) {
+  if (!userLiked) {
+    // Like action
+    const response = await axiosPrivate.patch(
+      `http://localhost:4000/api/feed/like/${feedId}`
+    );
+    if ((await response).status === 200) {
+      console.log("Successfully liked post");
+    }
+  } else {
+    // Unlike action
+    const response = axiosPrivate.patch(
+      `http://localhost:4000/api/feed/unlike/${feedId}`
+    );
+    if ((await response).status === 200) {
+      console.log("Successfully un-liked post");
+    }
+  }
+  dispatchFn({ type: LogActionType.LIKE, payload: { id: feedId } });
 }
 
 export const Feed: React.FC<Props> = ({ log, dispatchFn }) => {
@@ -69,10 +96,16 @@ export const Feed: React.FC<Props> = ({ log, dispatchFn }) => {
   return (
     <div className="p-3 max-w-[500px] my-6">
       <Link to={`/profile/${log.username}`}>
-        <p className="mb-3 font-bold text-lg">{log.username}</p>
+        <p className="mb-3 font-bold text-lg inline-block">{log.username}</p>
       </Link>
       <div className="carousel relative overflow-hidden">
-        <div style={{ maxWidth: "100%", height: "300px" }} className="flex">
+        <div
+          style={{ maxWidth: "100%", height: "300px" }}
+          className="flex"
+          onDoubleClick={() =>
+            likeAction(log.userhasLikedFeed, log._id, dispatchFn)
+          }
+        >
           {images && images[currentIndex]}
         </div>
         {/* Location icon */}
@@ -127,9 +160,10 @@ export const Feed: React.FC<Props> = ({ log, dispatchFn }) => {
       </div>
       <Engagement
         likes={log.likes}
-        visited={log.visited}
+        visited={false}
         feedId={log._id}
         userLiked={log.userhasLikedFeed}
+        likeAction={likeAction}
         dispatchFn={dispatchFn}
       />
       <p>

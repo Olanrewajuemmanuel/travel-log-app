@@ -21,9 +21,8 @@ const Home = ({ changeDisplayStatus }: Props) => {
   const [cookies] = useCookies(["accessToken"]);
 
   const fetchData = useMemo(async () => {
-    const res = await axiosPrivate.get("/feed/");
-
     try {
+      const res = await axiosPrivate.get("/feed/");
       const feeds = await res.data;
 
       if (!feeds) throw new Error("There was an error getting your feeds");
@@ -52,8 +51,6 @@ const Home = ({ changeDisplayStatus }: Props) => {
         if (err.code === "ERR_NETWORK") {
           setError({ message: "Network error, please ty again later." });
         } else {
-          console.log(err);
-
           setError({ message: err.message });
         }
       });

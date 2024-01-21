@@ -29,14 +29,6 @@ const Header = ({ changeDisplayStatus }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (window.location.pathname === "/register") {
-      setInRegister(true);
-    } else {
-      setInRegister(false);
-    }
-  }, []);
-
   return (
     <div className="w-full  shadow-md p-5 flex items-center justify-between">
       <Link to="/">
@@ -47,23 +39,16 @@ const Header = ({ changeDisplayStatus }: any) => {
 
       <ul className="flex space-x-4">
         {!cookies.accessToken ? (
-          inRegister ? (
-            <li>
-              <Link to={routes.LOGIN}>
-                <button className="rounded-full bg-red-600 hover:bg-red-800 text-gray-100 px-5 py-2">
-                  Login
-                </button>
-              </Link>
-            </li>
-          ) : (
-            <li>
-              <Link to={routes.REGISTER}>
-                <button className="rounded-full bg-red-600 hover:bg-red-800 text-gray-100 px-5 py-2">
-                  Register
-                </button>
-              </Link>
-            </li>
-          )
+          <li>
+            <Link to={inRegister ? routes.LOGIN : routes.REGISTER}>
+              <button
+                className="rounded-full bg-red-600 hover:bg-red-800 text-gray-100 px-5 py-2"
+                onClick={() => setInRegister(!inRegister)}
+              >
+                {inRegister ? "Login" : "Register"}
+              </button>
+            </Link>
+          </li>
         ) : (
           <li>
             <button

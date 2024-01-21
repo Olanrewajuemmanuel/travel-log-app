@@ -1,10 +1,15 @@
-import { LogAction, LogActionType } from "../types";
+import { LogAction } from "../types";
 
 interface Props {
   likes: number;
   visited: boolean;
   feedId: number | string;
   userLiked: boolean;
+  likeAction: (
+    userLiked: boolean,
+    feedId: string | number,
+    dispatchFn: React.Dispatch<LogAction>
+  ) => Promise<void>;
   dispatchFn: React.Dispatch<LogAction>;
 }
 
@@ -13,6 +18,7 @@ export const Engagement = ({
   visited,
   feedId,
   userLiked,
+  likeAction,
   dispatchFn,
 }: Props) => {
   return (
@@ -20,9 +26,7 @@ export const Engagement = ({
       <div className="like">
         <button
           className="inline-flex"
-          onClick={() =>
-            dispatchFn({ type: LogActionType.LIKE, payload: { id: feedId } })
-          }
+          onClick={() => likeAction(userLiked, feedId, dispatchFn)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -42,22 +46,14 @@ export const Engagement = ({
         </button>
       </div>
       <div className="visited">
-        <button
-          className="inline-flex"
-          onClick={() =>
-            dispatchFn({
-              type: LogActionType.BOOKMARK,
-              payload: { id: feedId },
-            })
-          }
-        >
+        <button className="inline-flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 mr-3"
             fill={`${visited ? "#5957da" : "none"}`}
             viewBox="0 0 24 24"
             stroke={`${visited ? "none" : "currentColor"}`}
-            stroke-width="2"
+            strokeWidth="2"
           >
             <path
               strokeLinecap="round"

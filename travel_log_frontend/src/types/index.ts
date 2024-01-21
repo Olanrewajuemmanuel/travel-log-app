@@ -2,7 +2,7 @@ export type User = {
   username: string;
 };
 export interface TravelLog {
-  _v: number
+  _v: number;
   _id: number | string;
   username: string;
   userId: string;
@@ -14,6 +14,8 @@ export interface TravelLog {
   likes: number;
   visited: boolean;
   userhasLikedFeed: boolean;
+  allLikedUsers?: string[];
+  shouldUnlikeNext?: boolean;
 }
 
 export type TravelLogState = Array<TravelLog>;
