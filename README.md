@@ -34,6 +34,12 @@ Clone and install.
 
 ```bash
 git clone https://github.com/Olanrewajuemmanuel/travel-log-app.git
+```
+
+Install dependencies
+
+```bash
+cd *backend
 npm i
 ```
 
@@ -47,12 +53,20 @@ Open a new terminal and run the frontend like so:
 
 ```bash
 cd *frontend/
+npm i
 npm start
 ```
 
 ## Contributing
 
 Pull requests are always welcome. If I don't respond to your pull request, disturb my inbox! :)
+I need your help with the following incomplete or non-existent features (not an exhaustive list):
+
+- Liking logs (incomplete)
+- Comment section
+- Bookmarking logs (incomplete)
+- Profiling (incomplete)
+  Thank you!
 
 ## Author
 
